@@ -20,41 +20,14 @@ module EventMachine
     def initialize(logger)
       @logger = logger
       @logger_queue = EM::Queue.new
+
+      queue_processor = Proc.new do |log_message|
+        @logger.send(log_message.method, log_message.message, log_message.progname)
+        EM.next_tick { @logger_queue.pop(&queue_processor) }
+      end
+
+      @logger_queue.pop(&queue_processor)
     end
-
-    def level; @logger.level; end
-    def level=(l); @logger.level = l; end
-    alias sev_threshold level
-    alias sev_threshold= level=
-
-    def datetime_format; @logger.datetime_format; end
-    def datetime_format=(l); @logger.datetime_format = l; end
-
-    def progname; @logger.progname; end
-    def progname=(l); @logger.progname = l; end
-
-    def formatter; @logger.formatter; end
-    def formatter=(l); @logger.formatter = l; end
-
-    # Returns +true+ iff the current severity level allows for the printing of
-    # +DEBUG+ messages.
-    def debug?; @logger.debug?; end
-
-    # Returns +true+ iff the current severity level allows for the printing of
-    # +INFO+ messages.
-    def info?; @logger.info?; end
-
-    # Returns +true+ iff the current severity level allows for the printing of
-    # +WARN+ messages.
-    def warn?; @logger.warn?; end
-
-    # Returns +true+ iff the current severity level allows for the printing of
-    # +ERROR+ messages.
-    def error?; @logger.error?; end
-
-    # Returns +true+ iff the current severity level allows for the printing of
-    # +FATAL+ messages.
-    def fatal?; @logger.fatal?; end
 
     def add(severity, message = nil, progname = nil, &block)
       return true if severity < @logger.level
@@ -69,7 +42,6 @@ module EventMachine
       @logger_queue.push(LogMessage.new(severity, message, progname))
     end
     alias log add
-
 
     # Log a +DEBUG+ message.
     def debug(progname = nil, &block)
@@ -105,8 +77,13 @@ module EventMachine
       @logger_queue.push(LogMessage.new(nil,data))
     end
 
-    def close
-      @logger.close
+    def method_missing(method, *args, &block)
+      return super unless @logger.respond_to?(method)
+      @logger.send(method, *args, &block)
+    end
+
+    def respond_to?(method, include_private = false)
+      @logger.respond_to?(method, include_private) || super(method, include_private)
     end
 
   end
