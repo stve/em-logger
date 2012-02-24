@@ -4,7 +4,7 @@ module EventMachine
   class LogMessage
     attr_accessor :severity, :message, :progname
 
-    def initialize(sev, message=nil, progname=nil)
+    def initialize(severity, message=nil, progname=nil)
       @severity = severity
       @message = message
       @progname = progname
@@ -22,7 +22,7 @@ module EventMachine
       @logger_queue = EM::Queue.new
 
       queue_processor = Proc.new do |log_message|
-        @logger.send(log_message.method, log_message.message, log_message.progname)
+        @logger.add(log_message.severity, log_message.message, log_message.progname)
         EM.next_tick { @logger_queue.pop(&queue_processor) }
       end
 

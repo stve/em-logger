@@ -1,19 +1,28 @@
 require 'spec_helper'
 
 describe EventMachine::Logger do
+  let(:loggr) { ::Logger.new(STDOUT) }
 
   context 'creating' do
     it 'instatiates with a logger' do
       EM.run_block do
-        l = ::Logger.new(STDOUT)
-        eml = EventMachine::Logger.new(l)
-        eml.logger.should eq(l)
+        eml = EventMachine::Logger.new(loggr)
+        eml.logger.should eq(loggr)
+      end
+    end
+
+    it 'starts the queue processor' do
+      eml = EventMachine::Logger.new(loggr)
+      loggr.should_receive('add').once
+
+      EM.run_block do
+        eml.debug('this is a test')
+        EM.stop
       end
     end
   end
 
   context 'log statements' do
-    let(:loggr) { ::Logger.new(STDOUT) }
     let(:eml) { EventMachine::Logger.new(loggr) }
 
     %w(debug info warn error fatal).each do |l|
@@ -48,8 +57,6 @@ describe EventMachine::Logger do
   end
 
   context 'queuing' do
-    let(:loggr) { ::Logger.new(STDOUT) }
-
     describe '#add' do
       context 'when logging below the defined level' do
         it 'pushes the log message onto the logger_queue' do
@@ -79,8 +86,6 @@ describe EventMachine::Logger do
   end
 
   context 'delegating to logger' do
-    let(:loggr) { ::Logger.new(STDOUT) }
-
     describe 'method_missing' do
       it 'passes through to the underlying logger' do
         eml = EventMachine::Logger.new(loggr)
