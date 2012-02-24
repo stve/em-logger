@@ -24,6 +24,8 @@ module EventMachine
 
     def level; @logger.level; end
     def level=(l); @logger.level = l; end
+    alias sev_threshold level
+    alias sev_threshold= level=
 
     def datetime_format; @logger.datetime_format; end
     def datetime_format=(l); @logger.datetime_format = l; end
@@ -66,6 +68,8 @@ module EventMachine
       end
       @logger_queue.push(LogMessage.new(severity, message, progname))
     end
+    alias log add
+
 
     # Log a +DEBUG+ message.
     def debug(progname = nil, &block)
