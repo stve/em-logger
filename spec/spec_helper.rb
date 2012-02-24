@@ -3,3 +3,4 @@ require 'simplecov'
 
 require 'em-logger'
 require 'rspec'
+require 'logger'
