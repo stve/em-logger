@@ -4,7 +4,7 @@ module EventMachine
   class LogMessage
     attr_accessor :severity, :message, :progname
 
-    def initialize(sev, message, progname)
+    def initialize(sev, message=nil, progname=nil)
       @severity = severity
       @message = message
       @progname = progname
@@ -95,6 +95,10 @@ module EventMachine
     # Log an +UNKNOWN+ message.
     def unknown(progname = nil, &block)
       add(::Logger::UNKNOWN, nil, progname, &block)
+    end
+
+    def <<(data)
+      @logger_queue.push(LogMessage.new(nil,data))
     end
 
     def close

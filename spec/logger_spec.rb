@@ -118,7 +118,12 @@ describe EventMachine::Logger do
   end
 
   describe '#<<' do
-    pending
+    it 'pushes the log message onto the logger_queue' do
+      loggr = ::Logger.new(STDOUT)
+      eml = EventMachine::Logger.new(loggr)
+      eml.logger_queue.should_receive('push').once
+      eml << 'this is a test'
+    end
   end
 
   describe '#close' do
