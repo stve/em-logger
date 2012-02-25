@@ -23,7 +23,7 @@ module EventMachine
 
       queue_processor = Proc.new do |log_message|
         @logger.add(log_message.severity, log_message.message, log_message.progname)
-        EM.next_tick { @logger_queue.pop(&queue_processor) }
+        EM.defer { @logger_queue.pop(&queue_processor) }
       end
 
       @logger_queue.pop(&queue_processor)
