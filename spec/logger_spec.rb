@@ -32,13 +32,6 @@ describe EventMachine::Logger do
           eml.send("#{l}", 'this is a test')
         end
       end
-
-      describe "##{l}?" do
-        it 'passes through to the underlying logger' do
-          loggr.should_receive("#{l}?").once
-          eml.send("#{l}?")
-        end
-      end
     end
 
     describe "#unknown" do
