@@ -1,8 +1,24 @@
 # EventMachine Logger
 
-A simple wrapper around a Ruby logger so that it works well in EventMachine.
+An experimental logger class for EventMachine applications.
 
 ## Usage
+
+EM::Logger is a simple delegator around the ruby logger class.  It responds to all the log levels you are familiar with from existing loggers (info, debug, warn, etc.).  The only difference is that it's instantiated by passing an existing logger in when initializing
+
+    require 'eventmachine'
+    require 'logger'
+    require 'em-logger'
+
+    log = Logger.new(STDOUT)
+    logger = EM::Logger.new(log)
+
+    EM.run do
+      logger.info('ohai')
+
+      EM.stop
+    end
+
 
 ## Contributing
 
