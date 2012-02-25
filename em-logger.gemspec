@@ -8,10 +8,10 @@ Gem::Specification.new do |gem|
 
   gem.author      = "Steve Agalloco"
   gem.email       = 'steve.agalloco@gmail.com'
-  gem.description = %q{TODO: Write a gem description}
-  gem.summary     = %q{TODO: Write a gem summary}
+  gem.description = 'An experimental logger class for EventMachine applications.'
+  gem.summary     = 'An experimental logger class for EventMachine applications.'
 
-  gem.add_dependency "eventmachine", ">= 1.0.0.beta.3"
+  gem.add_dependency "eventmachine", ">= 0.12.10"
 
   gem.add_development_dependency 'rake', '~> 0.9'
   gem.add_development_dependency 'rdiscount', '~> 1.6'
