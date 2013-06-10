@@ -4,7 +4,7 @@ describe EventMachine::Logger do
   let(:loggr) { ::Logger.new(STDOUT) }
 
   context 'creating' do
-    it 'instatiates with a logger' do
+    it 'instantiates with a logger' do
       EM.run_block do
         eml = EventMachine::Logger.new(loggr)
         eml.logger.should eq(loggr)
