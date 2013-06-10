@@ -27,6 +27,8 @@ module EventMachine
       end
 
       @logger_queue.pop(&queue_processor)
+
+      EM.add_shutdown_hook { drain } if EM.reactor_running?
     end
 
     def add(severity, message = nil, progname = nil, &block)
@@ -84,6 +86,15 @@ module EventMachine
 
     def respond_to?(method, include_private = false)
       @logger.respond_to?(method, include_private) || super(method, include_private)
+    end
+
+    def drain
+      drain_processor = Proc.new do |log_message|
+        @logger.add(log_message.severity, log_message.message, log_message.progname)
+      end
+      while not @logger_queue.empty? do
+        @logger_queue.pop(&drain_processor)
+      end
     end
 
   end

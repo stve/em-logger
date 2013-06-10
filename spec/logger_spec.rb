@@ -11,6 +11,13 @@ describe EventMachine::Logger do
       end
     end
 
+    it 'adds a shutdown hook when the reactor is running' do
+      EM.run_block do
+        EM.should_receive(:add_shutdown_hook).and_yield
+        eml = EventMachine::Logger.new(loggr)
+      end
+    end
+
     it 'starts the queue processor' do
       eml = EventMachine::Logger.new(loggr)
       loggr.should_receive('add').once
@@ -75,6 +82,16 @@ describe EventMachine::Logger do
           eml.add(::Logger::INFO) { 'ohai' }
         end
       end
+    end
+  end
+
+  context 'shutdown' do
+    it 'drains the queue on shutdown' do
+      eml = EventMachine::Logger.new(loggr)
+      eml.logger_queue << EventMachine::LogMessage.new(::Logger::WARN, 'test message', $0)
+      # 3.times { eml.add(::Logger::WARN) { 'ohai' } }
+      eml.drain
+      eml.logger_queue.should be_empty
     end
   end
 
