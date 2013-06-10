@@ -1,5 +1,7 @@
-# encoding: utf-8
-require File.expand_path('../lib/em-logger/version', __FILE__)
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'em-logger/version'
 
 Gem::Specification.new do |gem|
   gem.name        = 'em-logger'
@@ -12,13 +14,7 @@ Gem::Specification.new do |gem|
   gem.summary     = 'An experimental logger class for EventMachine applications.'
 
   gem.add_dependency "eventmachine", ">= 0.12.10"
-
-  gem.add_development_dependency 'rake', '~> 0.9'
-  gem.add_development_dependency 'rdiscount', '~> 1.6'
-  gem.add_development_dependency 'rspec', '~> 2.7'
-  gem.add_development_dependency 'simplecov', '~> 0.5'
-  gem.add_development_dependency 'yard', '~> 0.7'
-  gem.add_development_dependency 'em-ventually'
+  gem.add_development_dependency 'bundler', '~> 1.0'
 
   gem.executables = `git ls-files -- bin/*`.split("\n").map{|f| File.basename(f)}
   gem.files       = `git ls-files`.split("\n")
