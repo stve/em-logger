@@ -1,5 +1,12 @@
 # encoding: utf-8
-require 'simplecov'
+unless ENV['CI']
+  require 'simplecov'
+  SimpleCov.start do
+    add_group 'EM-Logger', 'lib/em-logger'
+    add_group 'Specs', 'spec'
+    add_filter '.bundle'
+  end
+end
 
 require 'em-logger'
 require 'rspec'
